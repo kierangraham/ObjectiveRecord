@@ -307,10 +307,7 @@
 
 - (void)setSafeValue:(id)value forKey:(id)key {
 
-    if (value == nil || value == [NSNull null]) {
-        [self setValue:nil forKey:key];
-        return;
-    }
+    if (value == nil || value == [NSNull null] || ![self respondsToSelector:NSSelectorFromString(key)]) 		return;
 
     NSDictionary *attributes = [[self entity] attributesByName];
     NSAttributeType attributeType = [[attributes objectForKey:key] attributeType];

@@ -86,7 +86,11 @@ describe(@"Mappings", ^{
         Car *car = [Car create:@{ @"hp": @150, @"insurance_id": @1234 }];
         [[car.insuranceCompany should] equal:[InsuranceCompany find:@{ @"remoteID": @1234 }]];
     });
-    
+
+    it(@"ignores unknown keys", ^{
+        [[theBlock(^{ [Car create:@{ @"hp": @150, @"chocolate": @"waffles" }]; }) shouldNot] raise];
+    });
+
 });
 
 SPEC_END
