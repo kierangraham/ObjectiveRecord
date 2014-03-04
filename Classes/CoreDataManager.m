@@ -29,6 +29,23 @@
     return singleton;
 }
 
+- (void) destroyCoreDataStack {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    if ([fileManager fileExistsAtPath:[[self sqliteStoreURL] path]]) {
+        [fileManager removeItemAtURL:[self sqliteStoreURL] error:nil];
+    }
+
+    _managedObjectContext = nil;
+    _managedObjectModel = nil;
+    _persistentStoreCoordinator = nil;
+}
+
+- (BOOL) coreDataStackIsAvailable {
+    NSDictionary *metaData = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:NSSQLiteStoreType URL:[self sqliteStoreURL] error:nil];
+    return [self.managedObjectModel isConfiguration:nil compatibleWithStoreMetadata:metaData];
+}
+
 
 #pragma mark - Private
 

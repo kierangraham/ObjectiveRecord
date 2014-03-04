@@ -11,15 +11,19 @@
 
 @interface CoreDataManager : NSObject
 
-@property (readonly, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (readonly, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic) NSManagedObjectModel *managedObjectModel;
+@property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 @property (copy, nonatomic) NSString *databaseName;
 @property (copy, nonatomic) NSString *modelName;
 
 + (id)instance DEPRECATED_ATTRIBUTE;
 + (instancetype)sharedManager;
+
+- (NSURL *)sqliteStoreURL;
+- (void) destroyCoreDataStack;
+- (BOOL) coreDataStackIsAvailable;
 
 - (BOOL)saveContext;
 - (void)useInMemoryStore;
