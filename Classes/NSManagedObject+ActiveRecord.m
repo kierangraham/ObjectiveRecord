@@ -296,7 +296,7 @@
 - (id)objectOrSetOfObjectsFromValue:(id)value ofClass:(Class)class {
     if ([value isKindOfClass:[NSDictionary class]])
         return [class findOrCreate:value inContext:self.managedObjectContext];
-    
+
     else if ([value isKindOfClass:[NSArray class]])
         return [NSSet setWithArray:[value map:^id(NSDictionary *dict) {
             return [class findOrCreate:dict inContext:self.managedObjectContext];
@@ -307,28 +307,34 @@
 
 - (void)setSafeValue:(id)value forKey:(id)key {
 
-    if (value == nil || value == [NSNull null] || ![self respondsToSelector:NSSelectorFromString(key)])
+    if (value == nil || value == [NSNull null]){
         return;
+    }
 
     NSDictionary *attributes = [[self entity] attributesByName];
     NSAttributeType attributeType = [[attributes objectForKey:key] attributeType];
 
-    if ((attributeType == NSStringAttributeType) && ([value isKindOfClass:[NSNumber class]]))
-        value = [value stringValue];
+    if (attributes[key] == nil) {
+        return;
+    }
 
+    if ((attributeType == NSStringAttributeType) && ([value isKindOfClass:[NSNumber class]])) {
+        value = [value stringValue];
+    }
     else if ([value isKindOfClass:[NSString class]]) {
 
-        if ([self isIntegerAttributeType:attributeType])
+        if ([self isIntegerAttributeType:attributeType]) {
             value = [NSNumber numberWithInteger:[value integerValue]];
-
-        else if (attributeType == NSBooleanAttributeType)
+        }
+        else if (attributeType == NSBooleanAttributeType) {
             value = [NSNumber numberWithBool:[value boolValue]];
-
-        else if (attributeType == NSFloatAttributeType)
+        }
+        else if (attributeType == NSFloatAttributeType){
             value = [NSNumber numberWithDouble:[value doubleValue]];
-
-        else if (attributeType == NSDateAttributeType)
+        }
+        else if (attributeType == NSDateAttributeType){
             value = [self.defaultFormatter dateFromString:value];
+        }
     }
 
     [self setValue:value forKey:key];
