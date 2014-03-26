@@ -1,11 +1,3 @@
-//
-//  FindersAndCreatorsTests.m
-//  SampleProject
-//
-//  Created by Marin Usalj on 7/13/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
-
 #import "Kiwi.h"
 #import "ObjectiveSugar.h"
 #import "Person+Mappings.h"
@@ -63,14 +55,14 @@ describe(@"Find / Create / Save / Delete specs", ^{
 
         it(@"Finds using [Entity where: STRING]", ^{
 
-            Person *unique = [Person where:[NSString stringWithFormat:@"firstName == '%@'",UNIQUE_NAME]].first;
+            Person *unique = [Person where:[NSPredicate predicateWithFormat:@"firstName == %@",UNIQUE_NAME]].first;
             [[unique.lastName should] equal:UNIQUE_SURNAME];
 
         });
 
         it(@"Finds using [Entity where: STRING and ARGUMENTS]", ^{
 
-            Person *unique = [Person whereFormat:@"firstName == '%@'", UNIQUE_NAME].first;
+            Person *unique = [Person where:@"firstName == %@", UNIQUE_NAME].first;
             [[unique.lastName should] equal:UNIQUE_SURNAME];
 
         });
@@ -108,6 +100,16 @@ describe(@"Find / Create / Save / Delete specs", ^{
         it(@"Finds the first match", ^{
             Person *johnDoe = [Person find:@{ @"firstName": @"John",
                                               @"lastName": @"Doe" }];
+            [[johnDoe.firstName should] equal:@"John"];
+        });
+
+        it(@"Finds the first match using [Entity find: STRING]", ^{
+            Person *johnDoe = [Person find:@"firstName = 'John' AND lastName = 'Doe'"];
+            [[johnDoe.firstName should] equal:@"John"];
+        });
+
+        it(@"Finds the first match using [Entity find: STRING and ARGUMENTS]", ^{
+            Person *johnDoe = [Person find:@"firstName = %@ AND lastName = %@", @"John", @"Doe"];
             [[johnDoe.firstName should] equal:@"John"];
         });
 
@@ -206,6 +208,11 @@ describe(@"Find / Create / Save / Delete specs", ^{
         it(@"counts zero when none found", ^{
             NSUInteger count = [Person countWhere:@{@"firstName" : @"Nobody"}];
             [[@(count) should] equal:@(0)];
+        });
+
+        it(@"counts with variable arguments", ^{
+            NSUInteger count = [Person countWhere:@"firstName = %@", @"Neo"];
+            [[@(count) should] equal:@(1)];
         });
     });
 

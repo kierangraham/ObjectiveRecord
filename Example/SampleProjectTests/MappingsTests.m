@@ -1,11 +1,3 @@
-//
-//  MappingsTests.m
-//  SampleProject
-//
-//  Created by Marin Usalj on 5/28/13.
-//  Copyright 2013 __MyCompanyName__. All rights reserved.
-//
-
 #import "Kiwi.h"
 #import "Person+Mappings.h"
 #import "Car+Mappings.h"
@@ -87,10 +79,12 @@ describe(@"Mappings", ^{
         [[car.insuranceCompany should] equal:[InsuranceCompany find:@{ @"remoteID": @1234 }]];
     });
 
-    it(@"ignores unknown keys", ^{
-        [[theBlock(^{ [Car create:@{ @"hp": @150, @"chocolate": @"waffles" }]; }) shouldNot] raise];
+    it(@"supports creating nested objects directly", ^{
+        Person *employee = [Person create];
+        Person *manager = [Person create:@{@"employees": @[employee]}];
+        [[[manager should] have:1] employees];
     });
-
+    
 });
 
 SPEC_END

@@ -1,7 +1,7 @@
 ## Intro
 This is a lightweight ActiveRecord way of managing Core Data objects.
-The syntax is borrowed from Ruby on Rails.<br>
-And yeah, no AppDelegate code.
+If you've done Rails before, it might sound familiar.<br>
+No AppDelegate code required.
 It's fully tested with [Kiwi](https://github.com/allending/Kiwi).
 
 [![Build Status](https://travis-ci.org/supermarin/ObjectiveRecord.png?branch=master)](https://travis-ci.org/supermarin/ObjectiveRecord)
@@ -35,7 +35,7 @@ NSArray *people = [Person all];
 NSArray *johns = [Person where:@"name == 'John'"];
 
 // And of course, John Doe!
-Person *johnDoe = [Person find:@"name == 'John' AND surname == 'Doe'"];
+Person *johnDoe = [Person find:@"name == %@ AND surname == %@", @"John", @"Doe"];
 
 // Members over 18 from NY
 NSArray *people = [Person where:@{ 
@@ -121,7 +121,7 @@ john.surname = @"Wayne";
 [john save];
 
 // find / delete
-[[Person where: @{ "member" : @NO }] each:^(Person *person) {
+[[Person where: @{ @"member" : @NO }] each:^(Person *person) {
     [person delete];
 }];
 ```
@@ -166,3 +166,8 @@ ObjectiveRecord supports CoreData's in-memory store. In any place, before your t
 #### Roadmap
 
 - NSIncrementalStore support
+
+## License
+
+ObjectiveRecord is available under the MIT license. See the LICENSE file
+for more information.
