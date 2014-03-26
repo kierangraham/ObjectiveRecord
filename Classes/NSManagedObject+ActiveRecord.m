@@ -353,7 +353,7 @@
     }
     else if ([value isKindOfClass:[NSString class]]) {
 
-        if ([self isIntegerAttributeType:attributeType])
+        if ([self isIntegerAttributeType:attributeType]) {
             value = [NSNumber numberWithInteger:[value integerValue]];
         }
         else if (attributeType == NSBooleanAttributeType) {
