@@ -84,7 +84,29 @@ describe(@"Mappings", ^{
         Person *manager = [Person create:@{@"employees": @[employee]}];
         [[[manager should] have:1] employees];
     });
-    
+
+    it(@"ignores unknown keys", ^{
+        Car *car = [Car create];
+        [[car shouldNot] receive:@selector(setPrimitiveValue:forKey:)];
+        [car update:@{ @"chocolate": @"waffles" }];
+    });
+
+    it(@"ignores embedded unknown keys", ^{
+        [[theBlock(^{
+            Car *car = [Car create];
+            [car update:@{ @"owner": @{ @"coolness": @(100) } }];
+        }) shouldNot] raise];
+    });
+
+    it(@"supports creating nested parent objects using IDs from the server", ^{
+        Car *car = [Car create:@{ @"insurance_company": @{ @"id" : @1234, @"owner_id" : @4567 }}];
+        [[car.insuranceCompany.owner should] equal:[Person find:@{ @"remoteID": @4567 }]];
+    });
+
+    it(@"supports creating full nested parent objects", ^{
+        Car *car = [Car create:@{ @"insurance_company": @{ @"id" : @1234, @"owner" : @{ @"id" : @4567, @"first_name" : @"Stan" } }}];
+        [[car.insuranceCompany.owner should] equal:[Person find:@{ @"remoteID": @4567, @"firstName": @"Stan" }]];
+    });
 });
 
 SPEC_END

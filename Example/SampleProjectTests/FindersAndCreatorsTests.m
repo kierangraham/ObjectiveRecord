@@ -79,7 +79,7 @@ describe(@"Find / Create / Save / Delete specs", ^{
             [[person.firstName should] equal:@"John"];
             [[person.lastName should] equal:@"Doe"];
             [[person.age should] equal:@0];
-            [[person.isMember should] equal:theValue(YES)];
+            [[person.isMember should] equal:@(YES)];
             [[person.anniversary should] equal:[NSDate dateWithTimeIntervalSince1970:0]];
         });
 
@@ -140,10 +140,22 @@ describe(@"Find / Create / Save / Delete specs", ^{
                              [NSManagedObjectContext defaultContext]);
         });
 
-        it(@"orders results by a single property", ^{
+        it(@"orders results by a single string property", ^{
             NSArray *resultLastNames = [[Person allWithOrder:@"lastName"]
                                         map:lastNameMapper];
             [[resultLastNames should] equal:@[@"Gaz", @"Mol", @"Mol", @"Zed"]];
+        });
+
+        it(@"orders results by a single string property descending", ^{
+            NSArray *resultFirstNames = [[Person allWithOrder:@"firstName DESC"]
+                                         map:firstNameMapper];
+            [[resultFirstNames should] equal:@[@"Don", @"Cal", @"Bob", @"Abe"]];
+        });
+
+        it(@"orders results by multiple string properties descending", ^{
+            NSArray *resultFirstNames = [[Person allWithOrder:@"lastName, firstName DESC"]
+                                         map:firstNameMapper];
+            [[resultFirstNames should] equal:@[@"Cal", @"Don", @"Bob", @"Abe"]];
         });
 
         it(@"orders results by multiple properties", ^{
@@ -328,7 +340,7 @@ describe(@"Find / Create / Save / Delete specs", ^{
 
         it(@"returns NO if save hasn't succeeded", ^{
             [[person.managedObjectContext should] receive:@selector(save:) andReturn:theValue(NO)];
-            [[theValue([person save]) should] beFalse];
+            [[@([person save]) should] beFalse];
         });
 
     });
