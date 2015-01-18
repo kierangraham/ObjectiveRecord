@@ -355,6 +355,11 @@
     NSAttributeDescription *attribute = [[self entity] attributesByName][key];
     NSAttributeType attributeType = [attribute attributeType];
 
+    // Relationships will be nil
+    if (attribute == nil) {
+        return;
+    }
+
     if ((attributeType == NSStringAttributeType) && ([value isKindOfClass:[NSNumber class]]))
         value = [value stringValue];
 
